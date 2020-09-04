@@ -1,0 +1,38 @@
+# create table test1 (
+#   id integer ,
+#   name varchar(20));
+# insert into test1 
+# values(10, 'Shreya');
+# insert into test1 
+# values(20, 'Sharanya');
+               
+               
+#  create table test2 (
+#   id integer primary key,
+#   name varchar(20));
+# insert into test2 
+# values(10, 'Shreya');
+# insert into test2 
+# values(20, 'Sharanya');
+# insert into test2 
+# values(45, 'Sumithra');
+# insert into test2 
+# values(30, 'Shawn');
+
+
+ create table student (
+   USN varchar(10) primary key,
+   name varchar(20),
+   Phn_num integer,
+   branch varchar(10));
+ insert into student 
+ values('4MT18CS06', 'Shreya', 9847, 'CS');
+ insert into student 
+ values('4MT18IS15', 'Ashitha', 9457, 'IS');
+ insert into student
+ values('4MT18CS34', 'Kshithija',6354, 'CS');
+ insert into student 
+ values('4MT18CS02', 'Shravya',6354, 'CS');
+ insert into student
+ values('4MT18IS56', 'Rajatha', 2783, 'IS');
+               
