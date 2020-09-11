@@ -1,0 +1,42 @@
+
+
+QUERY:-
+
+# select Book_id  from Book;
+
+# select * from Book
+# where Book_id = 15;
+
+
+
+
+create table Book(
+  Book_id integer Primary key,
+  Title varchar(20),
+  Publisher_Name varchar(30),
+  Pub_year integer);
+ 
+ insert into Book
+ values(1, 'DBMS', 'XYZ', 2000);
+ insert into Book
+ values(2, 'DAA', 'ABC', 2006);
+ insert into Book 
+ values(16, 'CNS', 'LMN', 2008);
+ insert into Book
+ values(15, 'ME', 'PQR', 2013);
+ insert into Book
+ values(18, 'ME', 'UVW', 2011);
+ 
+
+
+create table Book_Copies(
+  Book_id integer(30),
+  Branch_id integer(30),
+  No_of_copies integer,
+  primary key(Book_id, Branch_id));
+  
+
+                  
+ 
+    
+    
