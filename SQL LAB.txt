@@ -1,0 +1,37 @@
+
+create table Publisher(
+  Name varchar(30) primary key,
+  Address varchar(30),
+  Phone_No integer);
+  
+create table Book(
+  Book_id integer Primary key,
+  Title varchar(20),
+  Publisher_Name varchar(30) ,
+  Pub_year integer,
+  foreign key(Publisher_Name) references Publisher(Name));
+
+ 
+create table Book_Author(
+    Book_id integer primary key,
+    Author_Name varchar(20),
+	Foreign key(Book_id) references Book(Book_id) );
+
+create table Library_Branch(
+	Branch_id varchar(15) primary key,
+	Branch_Name varchar(30),
+    Address varchar(30));
+                    
+create table Book_Copies(
+  Book_id integer primary key,
+  Branch_id varchar(15) ,
+  No_of_copies integer,
+  Foreign key(Branch_id) references Library_Branch(Branch_id));              
+
+create table Book_Lending(
+  Book_id integer primary key,
+  Branch_id varchar(15),
+  Card_No varchar(30),
+  Date_Out integer,
+  Due_Date integer,
+  foreign key(Branch_id) references Library_Branch(Branch_id));
