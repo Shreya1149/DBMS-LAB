@@ -1,0 +1,172 @@
+
+create table Publisher(
+  Name varchar(30) primary key,
+  Address varchar(30),
+  Phone_No varchar(10));
+
+insert into Publisher
+values('Mcgraw', 'Bangalore', '9696500001');
+insert into Publisher
+values('Pearson', 'Bangalore', '9595950000');
+insert into Publisher
+values('SAM Pub', 'Mangalore', '9494940000');
+insert into Publisher
+values('IOP', 'Mumbai', '9797970000');
+insert into Publisher
+values('IEEE', 'Delhi', '9090900000');
+
+create table Book(
+  Book_id integer Primary key,
+  Title varchar(20),
+  Publisher_Name varchar(30) ,
+  Pub_year integer,
+  foreign key(Publisher_Name) references Publisher(Name) on delete cascade);
+
+insert into Book
+values(10, 'DBMS', 'Mcgraw', 2010);
+insert into Book
+values(20, 'SE', 'Pearson', 2008);
+insert into Book 
+values(30, 'FLAT', 'SAM Pub', 2019);
+insert into Book
+values(40, 'BDA', 'IOP', 2018);
+insert into Book
+values(50, 'ME', 'IEEE', 2020);
+ 
+                                              
+ 
+create table Book_Author(
+  Book_id integer primary key,
+  Author_Name varchar(20),
+  Foreign key(Book_id) references Book(Book_id) on delete cascade);
+
+insert into Book_Author
+values (10,'Andrew');                                                   
+insert into Book_Author
+values (20,'Raj Kumar');
+insert into Book_Author
+values (30,'Samuel');
+insert into Book_Author
+values (40,'Padma');
+insert into Book_Author
+values (50,'Guru');                                                   
+
+create table Library_Branch(
+  Branch_id integer primary key,
+  Branch_Name varchar(30),
+  Address varchar(30));
+
+insert into Library_Branch
+values (100,'Main Building','Mangalore');
+insert into Library_Branch
+values (200,'Ground Floor','Bangalore');
+insert into Library_Branch
+values (300,'1st Floor','Bangalore');
+insert into Library_Branch
+values (400,'Research Building','Udupi');
+insert into Library_Branch
+values (500,'OPD Building','Manipal');                    
+                  
+
+                  
+create table Book_Copies(
+  Book_id integer ,
+  Branch_id integer,
+  No_of_copies integer,
+  primary key(Book_id,Branch_id),
+  foreign key(Branch_id) references Library_Branch(Branch_id) on delete cascade,
+  foreign key(Book_id) references Book(Book_id) on delete cascade); 
+ 
+insert into Book_Copies
+values (10,100,20);
+insert into Book_Copies
+values (30,100,30);
+insert into Book_Copies
+values (10,200,5);
+insert into Book_Copies
+values (20,300,15);
+insert into Book_Copies
+values (40,500,7);                                                   
+                                                   
+
+create table Book_Lending(
+  Book_id integer ,
+  Branch_id integer,
+  Card_No integer,
+  Date_Out date,
+  Due_Date date,
+  primary key(Book_id,Branch_id, Card_No),
+  foreign key(Branch_id) references Library_Branch(Branch_id) on delete cascade,
+  foreign key(Book_id) references Book(Book_id) on delete cascade);
+                                                   
+insert into Book_Lending
+values (10,100,201,'2017-06-15','2017-06-25');
+insert into Book_Lending
+values (20,200,202,'2017-05-10','2017-07-20');
+insert into Book_Lending
+values (30,300,203,'2017-07-25','2017-07-30');
+insert into Book_Lending
+values (40,400,204,'2017-04-14','2017-08-26');
+insert into Book_Lending
+values (50,500,205,'2017-09-1','2017-09-10'); 
+insert into Book_Lending
+values (10,100,202,'2017-05-11','2017-09-10');
+insert into Book_Lending
+values (30,300,202,'2017-05-13','2017-05-22'); 
+insert into Book_Lending
+values (50,500,202,'2017-05-10','2017-04-20'); 
+
+1.]
+Retrieve details of all books in the library – id, title, name of publisher, authors,number of copies in each Programme, etc.
+Query:-
+
+Select B.Book_id,Title,Publisher_name,Author_name,Branch_id,No_of_copies 
+from Book B,Book_Author BA,Book_Copies BC 
+where B.Book_id=BA.Book_id and B.Book_id=BC.Book_id ;
+
+OUTPUT:-
+
+Book_id	Title	Publisher_name	Author_name	Branch_id	No_of_copies
+10	DBMS	Mcgraw	Andrew	100	20
+10	DBMS	Mcgraw	Andrew	200	5
+20	SE	Pearson	Raj Kumar	300	15
+30	FLAT	SAM Pub	Samuel	100	30
+40	BDA	IOP	Padma	500	7
+
+2.]
+Get the particulars of borrowers who have borrowed more than 3 books, but
+from Jan 2017 to Jun 2017.
+Query:-
+Select Card_No
+from Book_Lending 
+where Date_Out Between '2017-01-01' and '2017-06-01'
+Group By Card_No
+Having Count(*)>3; 
+
+OUTPUT:-
+Card_No
+202
+
+3.]
+Delete a book in BOOK table. Update the contents of other tables to reflect this data manipulation operation.
+
+Delete from Book where Book_id = 20;
+# After deleting tuple with Book_id = 20 
+Select *
+from Book;
+
+OUTPUT:-
+Book_id	Title	Publisher_Name	Pub_year
+10	DBMS	Mcgraw	2010
+30	FLAT	SAM Pub	2019
+40	BDA	IOP	2018
+50	ME	IEEE	2020
+
+
+
+
+
+
+
+
+                                    
