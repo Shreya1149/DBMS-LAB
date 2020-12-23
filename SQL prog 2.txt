@@ -1,0 +1,155 @@
+
+
+# SALESMAN(Salesman_id, Name, City, Commission)
+# CUSTOMER(Customer_id, Cust_Name, City, Grade, Salesman_id)
+# ORDERS(Ord_No, Purchase_Amt, Ord_Date, Customer_id, Salesman_id)
+
+
+create table SALESMAN(
+  Salesman_id integer,
+  Name varchar(20), 
+  City varchar(20), 
+  Commission integer,
+  primary key(Salesman_id));
+  
+create table CUSTOMER(
+  Customer_id integer,
+  Cust_Name varchar(20),
+  City varchar(20),
+  Grade integer,
+  Salesman_id integer,
+  primary key(Customer_id),
+  foreign key(Salesman_id) references SALESMAN(Salesman_id) on delete set NULL);
+ 
+create table ORDERS(
+  Ord_No integer,
+  Purchase_Amt integer,
+  Ord_Date date,
+  Customer_id integer,
+  Salesman_id integer,
+  primary key(Ord_No),
+  foreign key(Salesman_id) references SALESMAN(Salesman_id) on delete cascade,
+  foreign key(Customer_id) references CUSTOMER(Customer_id) on delete cascade); 
+  
+insert into SALESMAN
+values(10, 'Akash', 'Mangalore', 2);
+insert into SALESMAN
+values(20, 'Ram', 'Bangalore',10);
+insert into SALESMAN
+values(30, 'Raj', 'Mangalore',5);
+insert into SALESMAN
+values(40, 'Kiran', 'Mysore',15);
+insert into SALESMAN
+values(70, 'Karan', 'Mumbai', 8);
+
+insert into CUSTOMER
+values(1000, 'Avinash', 'Mangalore', 100, 10);
+insert into CUSTOMER
+values(2000, 'Kumar', 'Bangalore', 200, 20);
+insert into CUSTOMER
+values(2340, 'Anuj', 'Bangalore', 200, 20);
+insert into CUSTOMER
+values(3000, 'Preethi', 'Mysore', 300, 40);
+insert into CUSTOMER
+values(4000, 'Smitha', 'Mangalore', 400, 30);
+insert into CUSTOMER
+values(4465, 'Shreya', 'Udupi', 550, 70);
+
+
+insert into ORDERS
+values(551, 5000, '20-01-04', 1000, 10);
+insert into ORDERS
+values(552, 2500, '20-02-05', 2000, 20);
+insert into ORDERS
+values(553, 500, '20-03-03', 3000, 40);
+insert into ORDERS
+values(554, 1500, '20-05-02', 4000, 30);
+insert into ORDERS
+values(555, 2000, '20-01-04', 2000, 10);
+
+
+
+
+
+
+1. Count the customers with grades above Bangalore’s average
+Update CUSTOMER
+set Grade = 400
+where Customer_id = 4465;
+
+Update CUSTOMER
+set Grade = 300
+where Customer_id = 1000;
+
+
+select Grade, Count(*)
+from CUSTOMER
+where Grade > (Select avg(Grade) 
+                From CUSTOMER
+                WHERE City = 'Bangalore')
+Group By Grade;
+
+Select *
+from CUSTOMER;
+
+
+
+2. Find the name and numbers of all salesman who had more than one customer.
+Select Salesman_id,Name 
+from SALESMAN
+WHERE Salesman_id in(select Salesman_id
+ 					 from ORDERS
+ 					 Group By Salesman_id
+ 					 Having Count(*) > 1);
+
+USING NESTED QUERIES
+
+Select S.Salesman_id,S.Name 
+from SALESMAN S
+WHERE S.Salesman_id in(select O.Salesman_id
+ 					 from ORDERS O
+                      Where O.Salesman_id = S.Salesman_id
+ 					 Group By O.Salesman_id
+ 					 Having Count(*) > 1); 
+
+3. List all the salesman and indicate those who have and don’t have customers in
+their cities (Use UNION operation.)
+
+
+
+Select * 
+From SALESMAN
+Where Salesman_id in (Select Salesman_id  
+ 						From SALESMAN S
+ 						Where exists(Select Salesman_id
+              						 From CUSTOMER C
+ 			 						 Where S.Salesman_id = C.Salesman_id AND S.City = C.City)
+ 						union
+ 						Select Salesman_id  
+ 						From SALESMAN S
+ 						Where not exists(Select Salesman_id
+              						From CUSTOMER C
+ 			 						Where S.Salesman_id = C.Salesman_id AND S.City = C.City));
+
+ 
+4. Create a view that finds the salesman who has the customer with the highest order
+of a day.
+
+create view find_salesman(Salesman_Id)  as
+select Salesman_id
+From ORDERS
+Where Purchase_Amt IN (Select Max(Purchase_Amt)
+ 						From ORDERS
+ 						group by Ord_Date);
+                        
+                        
+Select *
+From find_salesman;
+
+5. Demonstrate the DELETE operation by removing salesman with id 1000. All
+his orders must also be deleted.
+
+Delete from SALESMAN
+where Salesman_id = 10;
+
+Select * from CUSTOMER;
