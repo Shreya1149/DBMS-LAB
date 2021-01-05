@@ -57,15 +57,15 @@ values(4465, 'Shreya', 'Udupi', 550, 70);
 
 
 insert into ORDERS
-values(551, 5000, '20-01-04', 1000, 10);
+values(551, 5000, '2020-01-04', 1000, 10);
 insert into ORDERS
-values(552, 2500, '20-02-05', 2000, 20);
+values(552, 2500, '2020-02-05', 2000, 20);
 insert into ORDERS
-values(553, 500, '20-03-03', 3000, 40);
+values(553, 500, '2020-03-03', 3000, 40);
 insert into ORDERS
-values(554, 1500, '20-05-02', 4000, 30);
+values(554, 1500, '2020-05-02', 4000, 30);
 insert into ORDERS
-values(555, 2000, '20-01-04', 2000, 10);
+values(555, 2000, '2020-01-04', 2000, 10);
 
 
 
@@ -89,9 +89,12 @@ where Grade > (Select avg(Grade)
                 WHERE City = 'Bangalore')
 Group By Grade;
 
-Select *
-from CUSTOMER;
 
+OUTPUT:-
+
+Grade	Count(*)
+300		2
+400		2
 
 
 2. Find the name and numbers of all salesman who had more than one customer.
@@ -112,9 +115,14 @@ WHERE S.Salesman_id in(select O.Salesman_id
  					 Group By O.Salesman_id
  					 Having Count(*) > 1); 
 
+OUTPUT:-
+
+Salesman_id	Name
+10			Akash
+
+
 3. List all the salesman and indicate those who have and don’t have customers in
 their cities (Use UNION operation.)
-
 
 
 Select * 
@@ -131,6 +139,16 @@ Where Salesman_id in (Select Salesman_id
               						From CUSTOMER C
  			 						Where S.Salesman_id = C.Salesman_id AND S.City = C.City));
 
+OUTPUT:-
+                                         
+Salesman_id	Name	City		Commission
+10			Akash	Mangalore	2
+20			Ram		Bangalore	10
+30			Raj		Mangalore	5
+40			Kiran	Mysore		15
+70			Karan	Mumbai		8
+ 
+
  
 4. Create a view that finds the salesman who has the customer with the highest order
 of a day.
@@ -146,6 +164,16 @@ Where Purchase_Amt IN (Select Max(Purchase_Amt)
 Select *
 From find_salesman;
 
+
+OUTPUT:-
+
+Salesman_Id
+10
+20
+40
+30
+
+
 5. Demonstrate the DELETE operation by removing salesman with id 1000. All
 his orders must also be deleted.
 
@@ -153,3 +181,12 @@ Delete from SALESMAN
 where Salesman_id = 10;
 
 Select * from CUSTOMER;
+
+OUTPUT:-
+Customer_id	Cust_Name	City	Grade	Salesman_id
+1000	Avinash	Mangalore		100		null
+2000	Kumar	Bangalore		200		20
+2340	Anuj	Bangalore		200		20
+3000	Preethi	Mysore			300		40
+4000	Smitha	Mangalore		400		30
+4465	Shreya	Udupi			550		70
