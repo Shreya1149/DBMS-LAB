@@ -163,6 +163,46 @@ Book_id	Title	Publisher_Name	Pub_year
 50	ME	IEEE	2020
 
 
+4. Partition the BOOK table based on year of publication. Demonstrate its working
+with a simple query.
+
+CREATE VIEW V_PUBLICATION AS SELECT
+PUB_YEAR
+FROM BOOK;
+
+select *
+from V_PUBLICATION;
+
+OUTPUT:
+-------
+Pub_year
+2010
+2008
+2019
+2018
+2020
+
+5. Create a view of all books and its number of copies that are currently available
+in the Library.
+
+CREATE VIEW V_BOOKS AS
+SELECT B.Book_id, B.Title, C.No_of_copies
+FROM Book B, Book_Copies C, Library_Branch L
+WHERE B.Book_id=C.Book_id
+AND C.Branch_id=L.Branch_id;
+
+
+SELECT * 
+FROM V_BOOKS;
+
+OUTPUT:
+
+Book_id	Title	No_of_copies
+10	DBMS	20
+10	DBMS	5
+20	SE	15
+30	FLAT	30
+40	BDA	7
 
 
 
