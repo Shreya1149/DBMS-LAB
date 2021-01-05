@@ -166,9 +166,9 @@ Book_id	Title	Publisher_Name	Pub_year
 4. Partition the BOOK table based on year of publication. Demonstrate its working
 with a simple query.
 
-CREATE VIEW V_PUBLICATION AS SELECT
-PUB_YEAR
-FROM BOOK;
+CREATE VIEW V_PUBLICATION AS
+SELECT Pub_Year
+FROM Book;
 
 select *
 from V_PUBLICATION;
