@@ -107,9 +107,9 @@ Mov_id	Mov_Title
 SELECT DISTINCT Mov_Title
 FROM MOVIES M, MOVIE_CAST MC
 WHERE M.Mov_id = MC.Mov_id and MC.Act_id IN(SELECT C.Act_id 
-											FROM MOVIE_CAST C
-											GROUP BY C.Act_id
-											HAVING COUNT(*) > 1);
+						FROM MOVIE_CAST C
+						GROUP BY C.Act_id
+						HAVING COUNT(*) > 1);
 											
 OUTPUT:
 											
@@ -149,7 +149,7 @@ Select Mov_Title, Rev_Stars
 from MOVIES m, RATING r
 where m.Mov_id = r.Mov_id
 and Rev_Stars in(select max(Rev_Stars) from RATING )
-order by Mov_Title
+order by Mov_Title;
 
 OUTPUT:
 
@@ -167,7 +167,7 @@ set Rev_Stars = 9.5
 where Mov_id in(select Mov_id
                  from MOVIES m, DIRECTOR d
                  where m.Dir_id = d.Dir_id and Dir_Name = 'Anthony Russo');
-Select * from RATING               
+Select * from RATING ;              
 
 
 OUPUT:
