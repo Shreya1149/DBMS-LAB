@@ -1,0 +1,193 @@
+
+
+CREATE TABLE ACTOR (
+	Act_id INT NOT NULL,
+    Act_Name VARCHAR(20) NOT NULL,
+    Act_Gender CHAR NULL,
+    PRIMARY KEY(Act_id));
+    
+CREATE TABLE DIRECTOR(
+	Dir_id INT NOT NULL ,
+    Dir_Name VARCHAR(20) NOT NULL,
+    Dir_Phone CHAR(10) NULL,
+    PRIMARY KEY(Dir_id));
+    
+CREATE TABLE MOVIES(
+	Mov_id INT NOT NULL,
+    Mov_Title VARCHAR(30) NOT NULL,
+    Mov_Year CHAR(4) NOT NULL,
+    Mov_Lang VARCHAR(15) NOT NULL,
+    Dir_id INT NOT NULL,
+    PRIMARY KEY(Mov_id),
+    foreign key(Dir_id) references DIRECTOR(Dir_id) on delete cascade);
+    
+CREATE TABLE MOVIE_CAST(
+	Act_id INT NOT NULL,
+    Mov_id INT NOT NULL,
+    Act_Role VARCHAR(20) NOT NULL,
+    PRIMARY KEY(Act_id, Mov_id),
+    foreign key(Act_id) references ACTOR(Act_id) on delete cascade,
+    foreign key(Mov_id) references MOVIES(Mov_id) on delete cascade);
+    
+CREATE TABLE RATING(
+	Mov_id INT NOT NULL,
+    Rev_Stars DECIMAL(3,2),
+    PRIMARY KEY(Mov_id),
+    FOREIGN KEY(Mov_id) references MOVIES(Mov_id)); 
+                                          
+INSERT INTO ACTOR
+VALUES(101, 'Russell Crowe', 'M'), 
+(102, 'Robert Downey,Jr', 'M'),
+(103, 'Chris Evans', 'M'),
+(104, 'Kate Winslet', 'F'),                                          
+(105, 'Leonardo DiCaprio', 'M'),                                          
+(106, 'Mark Ruffalo', 'M'),                                          
+(107, 'Zoe Saldana', 'F'), 
+(108, 'Sam Worthington', 'M');                                          
+                              
+INSERT INTO DIRECTOR
+VALUES(201, 'Anthony Russo', '8492657365'), 
+(202, 'Ridley Scott', '2745164857'),
+(203, 'James Cameron', '9889945331'),
+(204, 'Baz Lurhmann', '5436762543');  
+                                          
+INSERT INTO MOVIES
+VALUES(901, 'Avengers Endgame', '2019', 'Eng', 201),
+(902, 'Captain America', '2016', 'Eng', 201),
+(903, 'Titanic', '1997', 'Eng', 203),                                     
+(904, 'Avatar', '2009', 'Eng', 203),                                     
+(905, 'Robin Hood', '2010', 'Eng', 202),                                   
+(906, 'The Great Gatsby', '2013', 'Eng', 204);
+                                                   
+INSERT INTO MOVIE_CAST
+VALUES(101, 905, 'Hood'),
+(102, 902, 'Iron Man'),                                          
+(103, 902, 'Captain America'),                                          
+(103, 901, 'Captain America'),                                          
+(104, 903, 'Rose'),                                          
+(105, 903, 'Jack'),
+(105, 906, 'Jay Gatsby'),                                          
+(106, 901, 'Hulk'),
+(106, 902, 'Hulk'),
+(107, 904, 'Neytri'),
+(108, 904, 'Jake Sully');                                        
+                                          
+INSERT INTO RATING
+VALUES(901, 8.4),                                                     
+(902, 7.8),
+(903, 7.7),                                          
+(905, 8.4),
+(904, 7.1),                                          
+(906, 8.4);
+                                    
+
+
+-----------
+QUERIES
+----------
+
+# 1. List the titles of all movies directed by ‘Hitchcock’.
+
+SELECT M.Mov_id, M.Mov_Title
+FROM MOVIES M
+WHERE M.Dir_id IN ( SELECT D.Dir_id 
+                    FROM DIRECTOR D
+                    WHERE D.Dir_Name = 'Anthony Russo'
+					);
+OUPUT:
+---------
+
+Mov_id	Mov_Title
+
+901		Avengers Endgame
+902		Captain America
+
+2.Find the movie names where one or more actors acted in two or more movies.
+
+SELECT DISTINCT Mov_Title
+FROM MOVIES M, MOVIE_CAST MC
+WHERE M.Mov_id = MC.Mov_id and MC.Act_id IN(SELECT C.Act_id 
+											FROM MOVIE_CAST C
+											GROUP BY C.Act_id
+											HAVING COUNT(*) > 1);
+											
+OUTPUT:
+											
+Mov_Title
+
+Avengers Endgame
+Captain America
+Titanic
+The Great Gatsby
+
+3. List all actors who acted in a movie before 2000 and also in a movie after 2015
+(use JOIN operation).
+
+SELECT A.Act_id, A.Act_Name, M.Mov_Title, M.Mov_Year
+FROM ((ACTOR A JOIN MOVIE_CAST MC
+ON A.Act_id = MC.Act_id) JOIN MOVIES M ON M.Mov_id = MC.Mov_id)
+WHERE M.Mov_Year NOT BETWEEN '2000' and '2015';											
+
+OUTPUT:
+-------
+
+Act_id	 Act_Name			Mov_Title			Mov_Year
+
+103		Chris Evans			Avengers Endgame	2019
+106		Mark Ruffalo		Avengers Endgame	2019
+102		Robert Downey,Jr	Captain America		2016
+103		Chris Evans			Captain America		2016
+106		Mark Ruffalo		Captain America		2016
+104		Kate Winslet		Titanic				1997
+105		Leonardo DiCaprio	Titanic				1997
+
+											
+4. Find the title of movies and number of stars for each movie that has at least one rating and find the highest number of stars that movie received. Sort the result by movie title.
+Movie that has maximum ratings.
+
+Select Mov_Title, Rev_Stars
+from MOVIES m, RATING r
+where m.Mov_id = r.Mov_id
+and Rev_Stars in(select max(Rev_Stars) from RATING )
+order by Mov_Title
+
+OUTPUT:
+
+Mov_Title			Rev_Stars
+
+Avengers Endgame	8.40
+Robin Hood			8.40
+The Great Gatsby	8.40
+
+
+5.Update rating of all movies directed by ‘Steven Spielberg’ to5
+
+Update RATING
+set Rev_Stars = 9.5
+where Mov_id in(select Mov_id
+                 from MOVIES m, DIRECTOR d
+                 where m.Dir_id = d.Dir_id and Dir_Name = 'Anthony Russo');
+Select * from RATING               
+
+
+OUPUT:
+-----
+
+Mov_id	Rev_Stars
+
+901		9.50
+902		9.50
+903		7.70
+904		7.10
+905		8.40
+906		8.40
+
+
+
+
+
+
+
+
+
+https://www.db-fiddle.com/f/xcT2EEThx2v8fzLwozsSYW/0
